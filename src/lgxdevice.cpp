@@ -1,4 +1,5 @@
 #include <cstdio>
+#include "GlobalVar.h"
 #include "lgxdevice.h"
 
 #include <chrono>
@@ -23,17 +24,17 @@ namespace lgx2 {
 
     void Device::run() {
         ensureMinimumDuration([&]() {
-            _logger->logTimeStart("streamUpdate");
+            _logger->logTimeStart(run_Stream_TS);
             _stream->update();
-            _logger->logTimeEnd("streamUpdate", "Stream update");
+            _logger->logTimeEnd(run_Stream_TE, run_Stream_TE2);
 
-            _logger->logTimeStart("videoDisplay");
+            _logger->logTimeStart(run_Video_TS);
             _videoOutput->display();
-            _logger->logTimeEnd("videoDisplay", "Video display update");
+            _logger->logTimeEnd(run_Video_TE, run_Video_TE2);
 
-            _logger->logTimeStart("audioOutput");
+            _logger->logTimeStart(run_Audio_TS);
             _audioOutput->render();
-            _logger->logTimeEnd("audioOutput", "Audio output render");
+            _logger->logTimeEnd(run_Audio_TE, run_Audio_TE2);
         });
     }
 

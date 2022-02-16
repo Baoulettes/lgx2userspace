@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <signal.h>
+#include "GlobalVar.h"
 #include "UsbStream.h"
 #include "SdlFrameOutput.h"
 #include "V4LFrameOutput.h"
@@ -9,7 +10,6 @@
 #include "version.h"
 
 bool do_exit = false;
-
 int main(int argc, char **argv) {
     std::cout << "lgx2userspace v0.0.0 ("<< GIT_BRANCH << "-" << GIT_REV << ")" << std::endl;
 

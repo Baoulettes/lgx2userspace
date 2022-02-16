@@ -5,11 +5,12 @@
 #include <system_error>
 #include <sstream>
 #include <algorithm>
-
+#include "GlobalVar.h"
 #include "lgxdevice.h"
 
 #include "commanddata_lgx2.h"
 #include "commanddata_lgx.h"
+
 
 static void usbTransferComplete(struct libusb_transfer *transfer) {
     auto *stream = static_cast<libusb::UsbStream *>(transfer->user_data);
@@ -32,17 +33,17 @@ namespace libusb {
         }
 
         if (_dev == nullptr) {
-            throw std::runtime_error("Failed to open lgx2 - is it connected? Run lsusb to check");
+            throw std::runtime_error(US_FailOpen);
         }
 
         _frameBuffer = new uint8_t[0x1FC000 * 8];
 
         if (libusb_set_configuration(_dev, 1) != LIBUSB_SUCCESS) {
-            throw std::runtime_error("Failed to set configuration\n");
+            throw std::runtime_error(US_FailConf);
         }
 
         if (libusb_claim_interface(_dev, 0) != LIBUSB_SUCCESS) {
-            throw std::runtime_error("Could not claim interface for lgx2 - is something else using the device?\n");
+            throw std::runtime_error(US_FailClaim);
         }
     }
 
@@ -67,13 +68,13 @@ namespace libusb {
                 libusb_bulk_transfer(_dev, LIBUSB_ENDPOINT_OUT | 0x01, transferBuffer, static_cast<int>(commandLength),
                                      &actualLength, 0);
                 if (actualLength != commandLength) {
-                    throw std::runtime_error("Underrun when attempting to write command data for setup");
+                    throw std::runtime_error(US_UnderrunW);
                 }
             } else {
                 int bytesToRead = std::stoi(command.substr(1));
                 libusb_bulk_transfer(_dev, LIBUSB_ENDPOINT_IN | 0x01, transferBuffer, bytesToRead, &actualLength, 0);
                 if (actualLength != bytesToRead) {
-                    throw std::runtime_error("Underrun when attempting to read data during setup");
+                    throw std::runtime_error(US_UnderrunR);
                 }
             }
         }

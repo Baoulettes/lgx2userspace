@@ -1,16 +1,17 @@
 #include <cstring>
 #include <cstdio>
 #include "FrameBuilder.h"
+#include "GlobalVar.h"
 
 namespace utils {
 
-    FrameBuilder::FrameBuilder() : _videoFrame{new uint32_t[1920 * 1080]}, _audioFrame{new uint32_t[800]},
+    FrameBuilder::FrameBuilder() : _videoFrame{new uint32_t[FrameW * FrameH]}, _audioFrame{new uint32_t[800]},
                                    _videoOffset{0}, _audioOffset{0} {
 
     }
 
     uint8_t * FrameBuilder::buildVideo(uint8_t *block, uint32_t len) {
-        uint32_t blocksUntilCompleteFrame = 1920 * 1080 - _videoOffset;
+        uint32_t blocksUntilCompleteFrame = FrameW * FrameH - _videoOffset;
         uint32_t blocksCopied = (len > blocksUntilCompleteFrame) ? blocksUntilCompleteFrame : len;
 
         memcpy(_videoFrame + _videoOffset, block, blocksCopied * 4);
@@ -27,7 +28,7 @@ namespace utils {
     }
 
     uint32_t *FrameBuilder::completeVideoFrame() {
-        if (_videoOffset == 1920 * 1080) {
+        if (_videoOffset == FrameW * FrameH) {
             _videoOffset = 0;
             return _videoFrame;
         } else {
@@ -51,7 +52,7 @@ namespace utils {
     }
 
     uint32_t FrameBuilder::blocksUntilVideoComplete() {
-        return 1920 * 1080 - _videoOffset;
+        return FrameW * FrameH - _videoOffset;
     }
 
 }

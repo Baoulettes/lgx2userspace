@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.18)
 project(lgx2userspace)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
-add_executable(lgx2userspace src/main.cpp src/lgxdevice.cpp src/lgxdevice.h src/commanddata_lgx2.cpp src/commanddata_lgx2.h src/commanddata_lgx.cpp src/commanddata_lgx.h src/UsbStream.cpp src/UsbStream.h src/SdlFrameOutput.cpp src/SdlFrameOutput.h src/FrameBuilder.cpp src/FrameBuilder.h src/V4LFrameOutput.cpp src/V4LFrameOutput.h src/PulseAudioOutput.cpp src/PulseAudioOutput.h src/NOOPLogger.cpp src/NOOPLogger.h src/ChronoLogger.cpp src/ChronoLogger.h src/OptionParser.cpp src/OptionParser.h)
+add_executable(lgx2userspace src/GlobalVar.h src/GlobalVar.cpp src/main.cpp src/lgxdevice.cpp src/lgxdevice.h src/commanddata_lgx2.cpp src/commanddata_lgx2.h src/commanddata_lgx.cpp src/commanddata_lgx.h src/UsbStream.cpp src/UsbStream.h src/SdlFrameOutput.cpp src/SdlFrameOutput.h src/FrameBuilder.cpp src/FrameBuilder.h src/V4LFrameOutput.cpp src/V4LFrameOutput.h src/PulseAudioOutput.cpp src/PulseAudioOutput.h src/NOOPLogger.cpp src/NOOPLogger.h src/ChronoLogger.cpp src/ChronoLogger.h src/OptionParser.cpp src/OptionParser.h)
 
 target_include_directories(lgx2userspace PRIVATE /usr/include/SDL2)
 

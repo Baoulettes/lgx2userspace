@@ -1,3 +1,4 @@
+#include "GlobalVar.h"
 #include "ChronoLogger.h"
 
 #include <chrono>
@@ -30,7 +31,7 @@ void ChronoLogger::logTimeEnd(const std::string &name, const std::string &messag
     if (_counts[name] == 10) {
         _counts[name] = 0;
         if (!_summaryOnly) {
-            std::cout << message << " - avg. ns.: " << _times[name] / 50 << std::endl;
+            std::cout << message << lte_avgns << _times[name] / 50 << std::endl;
         }
         _summaries[name].push_back(_times[name]/50);
         _times[name] = 0;
@@ -42,14 +43,14 @@ void ChronoLogger::summarise() {
     uint64_t durationNanos = endTime - _appStart;
     double durationSeconds = durationNanos / 1000000000.0;
 
-    std::cout << std::endl << "Summary (Include this in bug reports)" << std::endl;
-    std::cout << "Total run time: " << durationNanos << "ns (" << durationSeconds<<"s)" << std::endl;
+    std::cout << std::endl << summ_incl << std::endl;
+    std::cout << summ_totl << durationNanos << summ_ns << durationSeconds<<summ_s << std::endl;
 
     for (auto key = _summaries.begin(); key != _summaries.end(); key++) {
         uint64_t total = 0;
         for (uint64_t value : (*key).second) {
             total += value;
         }
-        std::cout << (*key).first << " - average ns: " << total / (*key).second.size() << std::endl;
+        std::cout << (*key).first << summ_avg << total / (*key).second.size() << std::endl;
     }
 }

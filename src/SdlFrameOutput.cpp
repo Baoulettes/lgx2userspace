@@ -1,3 +1,4 @@
+#include "GlobalVar.h"
 #include "SdlFrameOutput.h"
 
 #include <SDL.h>
@@ -9,7 +10,7 @@ namespace sdl {
     }
 
     void SdlFrameOutput::initialiseVideo() {
-        _window = SDL_CreateWindow("lgx2userspace", 1920, 100, 1920, 1080, 0);
+        _window = SDL_CreateWindow(WindowName, WindowX, WindowY, WindowW, WindowH, 0);
 
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -17,18 +18,18 @@ namespace sdl {
                 _renderer,
                 SDL_PIXELFORMAT_YUY2,
                 SDL_TEXTUREACCESS_STREAMING,
-                1920,
-                1080);
+                FrameW,
+                FrameH);
     }
 
     void SdlFrameOutput::initialiseAudio() {
         SDL_AudioSpec want, have;
 
         SDL_memset(&want, 0, sizeof(want));
-        want.freq = 48000;
+        want.freq = AudioFrequency;
         want.format = AUDIO_S16LSB;
-        want.channels = 2;
-        want.samples = 1024;
+        want.channels = AudioChannel;
+        want.samples = AudioSample;
         want.callback = nullptr;
         _audio = SDL_OpenAudioDevice(nullptr, 0, &want, &have, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
         SDL_PauseAudioDevice(_audio, 0);
@@ -38,7 +39,7 @@ namespace sdl {
         uint16_t *pixels;
         int32_t pitch;
         SDL_LockTexture(_texture, nullptr, (void **) &pixels, &pitch);
-        memcpy(pixels, image, 1920 * 1080 * 2);
+        memcpy(pixels, image, FrameW * FrameH * 2);
         SDL_UnlockTexture(_texture);
     }
 

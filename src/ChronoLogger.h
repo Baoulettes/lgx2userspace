@@ -6,6 +6,7 @@
 #include "lgxdevice.h"
 
 class ChronoLogger : public lgx2::Logger {
+
 public:
     ChronoLogger(bool summaryOnly);
 
@@ -23,6 +24,5 @@ private:
     std::map<std::string, uint64_t> _times;
     std::map<std::string, uint32_t> _counts;
 };
-
 
 #endif //LGX2USERSPACE_CHRONOLOGGER_H
