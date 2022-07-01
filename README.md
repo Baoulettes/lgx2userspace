@@ -1,11 +1,8 @@
 # LGX2 Userspace driver (with LGX support)
 
-This software is based on : [ChrisAJS/lgx2userspace]https://github.com/ChrisAJS/lgx2userspace
-
+This software is based on : [ChrisAJS/lgx2userspace](https://github.com/ChrisAJS/lgx2userspace)
 All thanks to them to make it possible.
-
 All I do is minor tweak to meet my needs.
-
 Maybe someone else would find it useful
 
 
