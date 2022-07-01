@@ -4,7 +4,6 @@
 #include "OptionParser.h"
 #include "PulseAudioOutput.h"
 #include "ChronoLogger.h"
-#include "V4LFrameOutput.h"
 
 lgx2::VideoOutput *app::OptionParser::videoOutput() {
     return _videoOutput;
@@ -34,11 +33,6 @@ bool app::OptionParser::process(int argc, char **argv) {
             case 'V':
                 std::cout << case_v2 << std::endl;
                 _logger = new ChronoLogger(false);
-                continue;
-
-            case 'd':
-                std::cout << case_d << optarg << std::endl;
-                _videoOutput = new v4l::V4LFrameOutput(optarg);
                 continue;
             case 'x':
                 std::cout << case_x << std::endl;

@@ -8,7 +8,7 @@ static const unsigned char BULK_TRANSFER = 0x03;
 static const unsigned char URB_SUBMITTED = 0x53;
 static const unsigned char URB_COMPLETED = 0x43;
 
-int main(int argc, char **argv) {
+int init(int argc, char **argv) {
 
     if (argc == 1) {
         printf("Usage: %s <PCAPFILE>\n", argv[0]);

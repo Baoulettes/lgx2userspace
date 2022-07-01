@@ -1,7 +1,7 @@
 #include "GlobalVar.h"
 #include "SdlFrameOutput.h"
-
-#include <SDL.h>
+#include "Lib/SDL/SDL2/SDL.h"
+#include <cstring>
 
 namespace sdl {
 

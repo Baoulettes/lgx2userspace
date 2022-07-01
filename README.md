@@ -1,6 +1,14 @@
 # LGX2 Userspace driver (with LGX support)
-This software is little more than a POC and no guarantees of functionality are given and it may even be dangerous to use this software. Please
-consider contacting AverMedia for a supported Linux driver.
+
+This software is based on : [ChrisAJS/lgx2userspace]https://github.com/ChrisAJS/lgx2userspace
+
+All thanks to them to make it possible.
+
+All I do is minor tweak to meet my needs.
+
+Maybe someone else would find it useful
+
+
 
 This project contains a userspace driver for the [AverMedia LGX2 (GC551)](https://avermedia.com/LGX2) as well support for the [AverMedia LGX (GC550)](https://avermedia.com/LGX).
 
@@ -9,37 +17,29 @@ to forward the captured video and audio to a virtual video capture device.
 
 ## Building
 To build the project, you will need:
-* CMake
 * Libusb
 * Libpcap
 * SDL2
-* V4L2Loopback
 
 Execute the following commands to build in the root of the project:
 
 ```bash
-mkdir build && cd build
-cmake ..
-make
+make -j $(nproc)
 ```
 
-## Setup
-The userspace driver will require read and write access to the LGX/LGX2. 
 
-On a Linux system, this can be granted to the user by adding the following rules to Udev.
+You want to clean it ?
 
 ```bash
-sudo cp 999-avermedia.rules /etc/udev/rules.d/999-avermedia.rules
-sudo udevadm control --reload-rules
+make clean
 ```
 
-After the rule has been added, unplug and re-plug in the LGX/LGX2.
-
 ## Running
+This gonna have a a system redesign, you will be able to select it with a Dear ImGui menu.
 Once udev has been configured to grant read and write permission to the device it
-will be possible to run the application by executing `lgx2userspace`.
+will be possible to run the application by executing `lgx2userspace.elf`.
 
-If you are using the LGX GC550, use the command line option `x` - `./lgx2userspace -x`.
+If you are using the LGX GC550, use the command line option `x` - `./lgx2userspace.elf -x`.
 
 The application will take a few seconds to run as it streams setup information to the device, 
 and it will eventually display a window that will then start to display captured frames.
@@ -49,8 +49,7 @@ started. For example, a Nintendo Switch will not recognise the LGX/LGX2 as an ou
 it is undocked and re-docked.
 
 ### Options when running
-When using the default SDL2 renderer for video output, it is possible to toggle fullscreen
-by pressing `F` and to exit fullscreen by pressing `G`.
+--will be updated with something cool soon
 
 ### Gathering diagnostic information
 To help diagnose problems that may be fixed in the future, when submitting an issue
@@ -63,21 +62,8 @@ process frame data and time taken to render both audio and video.
 This information could be valuable when identifying issues so please try your best to include it
 in any issues you raise, thank you!
 
-## Running with V4L2 Output and Pulseaudio Output
-### V4L2 Output setup
-To output video to a virtual webcam output source, load the V4L2 Loopback Linux module with an easy to identify device
-number:
-
-```bash
-sudo modprobe v4l2loopback video_nr=99 exclusive_caps=1 card_label="LGX2"
-```
-
-You should now see `/dev/video99` exists:
-
-```bash
-ls /dev/video99
-/dev/video99
-```
+## Running with Pulseaudio Output
+All that too I want to simplify it.
 
 ### Pulseaudio Setup
 Pulseaudio can be configured by issuing the following commands:

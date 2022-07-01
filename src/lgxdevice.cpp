@@ -1,7 +1,6 @@
 #include <cstdio>
 #include "GlobalVar.h"
 #include "lgxdevice.h"
-
 #include <chrono>
 #include <unistd.h>
 

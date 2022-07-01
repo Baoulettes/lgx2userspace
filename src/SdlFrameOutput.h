@@ -3,7 +3,7 @@
 
 
 #include "lgxdevice.h"
-#include <SDL.h>
+#include "Lib/SDL/SDL2/SDL.h"
 
 namespace sdl {
 

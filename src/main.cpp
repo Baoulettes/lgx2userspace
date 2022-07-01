@@ -1,10 +1,9 @@
 #include <iostream>
-#include <SDL.h>
+#include "Lib/SDL/SDL2/SDL.h"
 #include <signal.h>
 #include "GlobalVar.h"
 #include "UsbStream.h"
 #include "SdlFrameOutput.h"
-#include "V4LFrameOutput.h"
 #include "NOOPLogger.h"
 #include "OptionParser.h"
 #include "version.h"
