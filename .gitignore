@@ -2,3 +2,5 @@
 cmake-build-debug
 build/
 src/version.h
+imgui.ini
+lgxuserspace.elf
