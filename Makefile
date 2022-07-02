@@ -34,9 +34,10 @@ TARGET := lgxuserspace.elf
 endif
 
 INC_DIRS := $(addprefix -I, \
-	. \
 	src \
 	utils \
+	Lib/ImGui \
+	Lib/SDL \
 )
 
 ifeq ($(UNAME), Linux) #LINUX
@@ -64,8 +65,14 @@ LDLIBS += \
 endif
 
 CXX_FILES := \
-	$(shell find src -type f -name "*.cpp")
-
+	$(shell find src -type f -name "*.cpp") \
+	$(shell find Lib/ImGui -type f -name "imgui.cpp") \
+	$(shell find Lib/ImGui -type f -name "imgui_draw.cpp") \
+	$(shell find Lib/ImGui -type f -name "imgui_widgets.cpp") \
+	$(shell find Lib/ImGui -type f -name "imgui_tables.cpp") \
+	$(shell find Lib/ImGui -type f -name "imgui_internal.cpp") \
+	$(shell find Lib/ImGui/backends -type f -name "imgui_impl_sdl.cpp") \
+	$(shell find Lib/ImGui/backends -type f -name "imgui_impl_opengl3.cpp") 
 C_FILES := \
 	$(shell find utils -type f -name "*.c")
 

@@ -33,7 +33,8 @@ namespace libusb {
         }
 
         if (_dev == nullptr) {
-            throw std::runtime_error(US_FailOpen);
+            //Do nothing anymore as we have interface handling now
+            //throw std::runtime_error(US_FailOpen);
         }
 
         _frameBuffer = new uint8_t[0x1FC000 * 8];
