@@ -4,6 +4,7 @@
 
 //Hold various variable to change change frame size easier.
 extern const char* WindowName;
+extern const char* SettingFile;
 extern const int FrameW;
 extern const int FrameH;
 extern const int WindowW;
@@ -41,6 +42,7 @@ extern const std::string case_v1;
 extern const std::string case_v2;
 extern const std::string case_d;
 extern const std::string case_x;
+extern const std::string case_lgx2;
 extern const std::string case_none;
 
 //PulseAudioOutput.cpp
@@ -55,9 +57,5 @@ extern const std::string US_FailClaim;
 extern const std::string US_UnderrunW;
 extern const std::string US_UnderrunR;
 
-//V4LFrameOutput.cpp
-extern const std::string V4LFO_FailOpen;
-extern const std::string V4LFO_FailSetupV;
-extern const std::string V4LFO_FailSetup;
-extern const char* V4LFO_FailBytes;
-
+//ConfigFile.cpp
+extern const std::string CF_FileOpenIssue;

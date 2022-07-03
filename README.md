@@ -9,7 +9,6 @@ All I do is minor tweak to meet my needs.
 Maybe someone else would find it useful
 
 
-
 This project contains a userspace driver for the [AverMedia LGX2 (GC551)](https://avermedia.com/LGX2) as well support for the [AverMedia LGX (GC550)](https://avermedia.com/LGX).
 
 It can be used to display the captured video and audio in a standalone window or
@@ -35,11 +34,13 @@ make clean
 ```
 
 ## Running
-This gonna have a a system redesign, you will be able to select it with a Dear ImGui menu.
 Once udev has been configured to grant read and write permission to the device it
 will be possible to run the application by executing `lgx2userspace.elf`.
 
-If you are using the LGX GC550, use the command line option `x` - `./lgx2userspace.elf -x`.
+If you are using the LGX GC551, create a file next to `lgx2userspace.elf`, name  that file
+`settings.ini` in it place this text :
+``[Settings]
+LGX2Mode=1``
 
 The application will take a few seconds to run as it streams setup information to the device, 
 and it will eventually display a window that will then start to display captured frames.
@@ -49,7 +50,9 @@ started. For example, a Nintendo Switch will not recognise the LGX/LGX2 as an ou
 it is undocked and re-docked.
 
 ### Options when running
---will be updated with something cool soon
+Press the keyboard touch F1 will bring an ImGui menu bar on top, you will be able to change the 
+frame size (not window size, this is not implemented yet).
+More options will come later feel free to suggest
 
 ### Gathering diagnostic information
 To help diagnose problems that may be fixed in the future, when submitting an issue
@@ -61,9 +64,6 @@ process frame data and time taken to render both audio and video.
 
 This information could be valuable when identifying issues so please try your best to include it
 in any issues you raise, thank you!
-
-## Running with Pulseaudio Output
-All that too I want to simplify it.
 
 ### Pulseaudio Setup
 Pulseaudio can be configured by issuing the following commands:

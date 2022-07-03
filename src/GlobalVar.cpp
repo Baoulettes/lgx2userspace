@@ -1,14 +1,74 @@
 #include "GlobalVar.h"
+#include "ConfigFile.h"
+#include "../Lib/mINI/src/mini/ini.h"
 #include <string>
-
-//Hold various variable to change change frame size easier.
+using namespace std;
+//Hold various variable to change frame size easier.
 const char* WindowName   =   "lgx2userspace";
-const int FrameW  =   704;
-const int FrameH  =   480;
-const int WindowW =   1920;
-const int WindowH =   1080;
-const int WindowX =   1920;
-const int WindowY =   100;
+const char* SettingFile   =   "settings.ini";
+int GetFrameW(){
+	int VideoMode = GetIntValue("VideoMode",0);
+    if (VideoMode == 0){
+        return 1920;
+    } else if (VideoMode == 1){
+        return 1280;
+    } else if (VideoMode == 2){
+        return 720;
+    } else {
+        mINI::INIFile file(SettingFile);
+        mINI::INIStructure ini;
+        file.read(ini);
+        int result = std::stoi(ini["Settings"]["FrameW"]);
+        if (result == NULL || static_cast<int>(result) != result){
+            return 1920;
+        }
+    }
+    return 1920;
+}
+int GetFrameH(){
+	int VideoMode = GetIntValue("VideoMode",0);
+    if (VideoMode == 0){
+        return 1080;
+    } else if (VideoMode == 1){
+        return 720;
+    } else if (VideoMode == 2){
+        return 480;
+    } else {
+        mINI::INIFile file(SettingFile);
+        mINI::INIStructure ini;
+        file.read(ini);
+        int result = std::stoi(ini["Settings"]["FrameH"]);
+        if (result == NULL || static_cast<int>(result) != result){
+            return 1080;
+        }
+    }
+    return 1080;
+}
+int GetWinW(){
+	mINI::INIFile file(SettingFile);
+	mINI::INIStructure ini;
+    file.read(ini);
+	int result = std::stoi(ini["Settings"]["WindowW"]);
+    if (result == NULL || static_cast<int>(result) != result){
+        return 1920;
+    }
+    return result;
+}
+int GetWinH(){
+	mINI::INIFile file(SettingFile);
+	mINI::INIStructure ini;
+    file.read(ini);
+	int result = std::stoi(ini["Settings"]["WindowH"]);
+    if (result == NULL || static_cast<int>(result) != result){
+        return 1080;
+    }
+    return result;
+}
+const int FrameW  =   GetFrameW();
+const int FrameH  =   GetFrameH();
+
+const int WindowW =   GetWinW();
+const int WindowH =   GetWinH();
 
 const int AudioChannel    =   2;
 const int AudioFrequency  =   48000;
@@ -40,6 +100,7 @@ const std::string case_v1     =   "Logging diagnostics information at end of exe
 const std::string case_v2     =   "Logging diagnostics information - with output during execution ";
 const std::string case_d      =   "Attempting to output to V4L2Loopback device: ";
 const std::string case_x      =   "Using the LGX GC550 support";
+const std::string case_lgx2   =   "Using the LGX GC551 support";
 const std::string case_none   =   " usage:\n\t-v\tPrint diagnostics information summary at end of execution, useful when submitting bugs\n\t-V\tPrint diagnostic information during execution\n\t-d V4L2LoopbackDevice\tSpecify the V4L2Loopback device to output video to (e.g. /dev/video99)\n\n";
 
 //PulseAudioOutput.cpp
@@ -54,9 +115,5 @@ const std::string US_FailClaim   =   "Could not claim interface for lgx2 - is so
 const std::string US_UnderrunW   =   "Underrun when attempting to write command data for setup";
 const std::string US_UnderrunR   =   "Underrun when attempting to read data during setup";
 
-//V4LFrameOutput.cpp
-const std::string V4LFO_FailOpen    =   "Failed to open V4L2 Loopback device";
-const std::string V4LFO_FailSetupV  =   "Cannot setup V4L2Loopback device for video output";
-const std::string V4LFO_FailSetup   =   "Cannot setup V4L2Loopback device";
-const char* V4LFO_FailBytes   =   "Only wrote %ld bytes (expected %d)\n";
-
+//ConfigFile.cpp
+const std::string CF_FileOpenIssue   =   "There is some issues reading the file";

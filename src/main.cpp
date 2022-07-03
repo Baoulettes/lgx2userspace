@@ -1,10 +1,9 @@
 #include <iostream>
 #include "../Lib/SDL/SDL2/SDL.h"
-#include <signal.h>
+#include <csignal>
 #include "GlobalVar.h"
+#include "ConfigFile.h"
 #include "UsbStream.h"
-//#include "SdlFrameOutput.h"
-//#include "ImGuiImpl.h"
 #include "NOOPLogger.h"
 #include "OptionParser.h"
 #include "version.h"
@@ -87,6 +86,28 @@ namespace sdl {
     };
 }
 namespace ImGui {
+    void Tooltip(const char* SettingName) {
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("%s", SettingName);
+    }
+    void NewRadioButton(const char* SettingName, const char* VarName, int id) {
+        std::string make_invisible = "##";
+        make_invisible += SettingName;
+        make_invisible += VarName;
+
+        int val = GetIntValue(VarName, 0);
+        if (ImGui::RadioButton(make_invisible.c_str(), id == val)) {
+            SetIntValue(VarName, id);
+        }
+        ImGui::SameLine();
+        ImGui::Text("%s", SettingName);
+    }
+    void NewCheckBox(const char* SettingName, const char* VarName) {
+        bool Value = (bool)GetIntValue(VarName, 0);
+        if (ImGui::Checkbox(SettingName, &Value)) {
+            SetIntValue(VarName, Value);
+        }
+    }
     void DockSpaceUI() {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         SetNextWindowPos(viewport->Pos);
@@ -112,22 +133,20 @@ namespace ImGui {
         if (IsKeyPressed(TOGGLE_BTN)) {
             ShowToolBar = !ShowToolBar;
         }
-        if (BeginMainMenuBar()) {
-       //if (ShowToolBar && BeginMainMenuBar()) { 
-            if (ImGui::BeginMenu("Run"))  {
-                if(Button("LGX - GC550 1080p")){
-                    L_FrameW = 1920;
-                    L_FrameH = 1080;
-                }
-                if(Button("LGX - GC550 720p")){
-                    L_FrameW = 1280;
-                    L_FrameH = 720;
-                }
-                if(Button("LGX - GC550 Gamecube mode")){
-                    L_FrameW = 704;
-                    L_FrameH = 480;
-                }
-                ImGui::EndMenu();
+        if (ShowToolBar && BeginMainMenuBar()) {
+            Text("LGX - Userspace");
+            Separator();
+            if (BeginMenu("Settings"))  {
+                NewRadioButton("1080p", "VideoMode",0);
+                Tooltip("This will turn 1080p frame capture on next boot");
+                NewRadioButton("720p", "VideoMode",1);
+                Tooltip("This will turn 720p frame capture on next boot");
+                NewRadioButton("480p", "VideoMode",2);
+                Tooltip("This will turn 480p frame capture on next boot");
+                //NewRadioButton("Custom", "VideoMode",2);
+                NewCheckBox("Use LGX 2 - GC551", "LGX2Mode");
+                Tooltip("Using it will make the software look LGX GC551 in next run\n By default it look for LGX GC550");
+                EndMenu();
             }
             EndMainMenuBar();
         }
@@ -171,9 +190,9 @@ int main(int argc, char **argv) {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    _window = SDL_CreateWindow(WindowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, FrameW, FrameH, window_flags);
+    _window = SDL_CreateWindow(WindowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WindowW, WindowH, window_flags);
     _renderer = SDL_CreateRenderer(_window, -1, 1);
-    _texture = SDL_CreateTexture(_renderer,SDL_PIXELFORMAT_YUY2,SDL_TEXTUREACCESS_STREAMING,FrameW,FrameH);
+    _texture = SDL_CreateTexture(_renderer,SDL_PIXELFORMAT_YUY2,SDL_TEXTUREACCESS_STREAMING,FrameW, FrameH);
     _gl_context = SDL_GL_CreateContext(_window);
     SDL_GL_MakeCurrent(_window, _gl_context);
     SDL_GL_SetSwapInterval(0.0007); // Enable vsync
@@ -188,7 +207,11 @@ int main(int argc, char **argv) {
     lgx2::VideoOutput *videoOutput{optionParser.videoOutput()};
     lgx2::AudioOutput *audioOutput{optionParser.audioOutput()};
 
-    libusb::UsbStream stream{optionParser.deviceType()};
+    libusb::LGXDeviceType devicetype = libusb::LGXDeviceType::LGX;
+    if (GetLGXMode() == 1) {
+        devicetype = libusb::LGXDeviceType::LGX2;
+    }
+    libusb::UsbStream stream{devicetype};
     sdl::SdlFrameOutput sdlOutput = sdl::SdlFrameOutput();
     NOOPLogger noopLogger{};
 
@@ -205,8 +228,6 @@ int main(int argc, char **argv) {
     }
 
     lgx2::Device device{&stream, videoOutput, audioOutput, logger};
-
-    device.initialise();
 
    // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -234,9 +255,8 @@ int main(int argc, char **argv) {
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+    device.initialise();
     while (!do_exit) {
-
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
@@ -252,8 +272,11 @@ int main(int argc, char **argv) {
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         SDL_GL_SwapWindow(_window);
-        device.run();
+        if (!ShowToolBar) {
+            device.run();
+        }
     }
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
