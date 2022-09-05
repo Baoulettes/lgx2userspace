@@ -18,7 +18,7 @@ The Windows variant can be built once you have installed MingW32 on your machine
 
 Then, if you are lucky the following commands should _just work_.
 
-```bash
+```bash1
 mkdir winbuild
 cd winbuild
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../TC-Mingw.cmake ..
